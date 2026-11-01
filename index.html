@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<!-- Agri Wangi Berry Report v1.0.0 — LANDING PAGE PUBLIK        [ MANDIRI · GitHub Pages ] -->
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Agri Wangi Berry Report — pencatatan harian lintas divisi dan laporan mingguan/bulanan PT. Agri Wangi Berry.">
+<meta name="theme-color" content="#0C1014">
+<title>Agri Wangi Berry Report</title>
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=swap" rel="stylesheet">
+<script>try { const t = localStorage.getItem('awb_tema'); if (t === 'gelap' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark'); } catch (e) {}</script>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+  const v = (n) => `rgb(var(--c-${n}) / <alpha-value>)`;
+  tailwind.config = { darkMode: 'class', theme: { extend: {
+    colors: { background: v('background'), surface: v('surface'), 'surface-low': v('surface-low'), 'surface-high': v('surface-high'), primary: v('primary'), 'on-primary': v('on-primary'), secondary: v('secondary'), hairline: v('hairline'), subtle: v('subtle'), strong: v('strong'), 'ok-ink': v('ok-ink'), 'ok-bg': v('ok-bg'), 'warn-ink': v('warn-ink'), 'crit-ink': v('crit-ink'), 'info-ink': v('info-ink') },
+    fontFamily: { sans: ['Geist', 'system-ui', 'sans-serif'], mono: ['"JetBrains Mono"', 'monospace'], display: ['"Space Grotesk"', 'Geist', 'sans-serif'] } } } };
+</script>
+<link rel="stylesheet" href="css/app.css?v=1.0.0">
+</head>
+<body class="bg-background text-primary font-sans antialiased">
+<header class="sticky top-0 z-30 bg-surface/95 backdrop-blur border-b border-hairline">
+  <div class="max-w-6xl mx-auto h-14 px-4 flex items-center gap-3">
+    <img src="assets/logo-awb.png" alt="Agri Wangi Berry" class="h-8">
+    <span class="font-display font-semibold hidden sm:inline">Agri Wangi Berry Report</span>
+    <span class="flex-1"></span>
+    <a href="#fitur" class="hidden md:inline text-[14px] text-secondary hover:text-primary px-2">Fitur</a>
+    <a href="#alur" class="hidden md:inline text-[14px] text-secondary hover:text-primary px-2">Cara Kerja</a>
+    <a href="app.html#/masuk" class="tombol tombol-utama"><span class="material-symbols-outlined text-[18px]" aria-hidden="true">login</span>Masuk</a>
+  </div>
+</header>
+
+<main>
+  <section class="blueprint border-b border-hairline">
+    <div class="max-w-6xl mx-auto px-4 py-14 lg:py-24 grid lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <p class="font-mono text-[11px] tracking-wider text-secondary">PT. AGRI WANGI BERRY · SISTEM LAPORAN INTERNAL</p>
+        <h1 class="font-display text-[34px] sm:text-[44px] leading-[1.1] font-bold mt-3" id="l-judul">Agri Wangi Berry Report</h1>
+        <p class="text-[17px] text-secondary mt-4 max-w-xl" id="l-tagline">Laporan harian lintas divisi, rekap otomatis, persetujuan berjenjang.</p>
+        <div class="flex flex-wrap gap-3 mt-7">
+          <a href="app.html#/masuk" class="tombol tombol-utama h-12 px-5 text-[15px]"><span class="material-symbols-outlined" aria-hidden="true">login</span>Masuk ke Aplikasi</a>
+          <a href="#fitur" class="tombol h-12 px-5 text-[15px]">Lihat fitur</a>
+        </div>
+        <p class="font-mono text-[11px] text-secondary mt-5">Akses hanya untuk karyawan terdaftar (akun Google perusahaan / email yang didaftarkan Manager).</p>
+      </div>
+      <div class="kartu p-4">
+        <div class="flex items-center justify-between border-b border-hairline pb-2"><span class="font-mono text-[11px] text-secondary">DIVISI TERHUBUNG</span><span class="font-mono text-[11px] text-ok-ink">● 5 DIVISI</span></div>
+        <ul class="divide-y divide-hairline" id="l-divisi">
+          <li class="flex items-center gap-3 py-3"><span class="material-symbols-outlined" aria-hidden="true">potted_plant</span>Greenhouse 1 (GH1)</li>
+          <li class="flex items-center gap-3 py-3"><span class="material-symbols-outlined" aria-hidden="true">nest_eco_leaf</span>Greenhouse 2 (GH2)</li>
+          <li class="flex items-center gap-3 py-3"><span class="material-symbols-outlined" aria-hidden="true">package_2</span>Packing &amp; Pengiriman</li>
+          <li class="flex items-center gap-3 py-3"><span class="material-symbols-outlined" aria-hidden="true">pest_control</span>Hama &amp; Penyakit Tanaman (HPT)</li>
+          <li class="flex items-center gap-3 py-3"><span class="material-symbols-outlined" aria-hidden="true">water_ph</span>Fertigasi &amp; Nutrisi</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="fitur" class="max-w-6xl mx-auto px-4 py-14">
+    <p class="font-mono text-[11px] tracking-wider text-secondary">FITUR UTAMA</p>
+    <h2 class="font-display text-[28px] font-semibold mt-1">Satu tempat untuk data kebun, packing, HPT, dan fertigasi</h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-6">
+      <article class="kartu p-5"><span class="material-symbols-outlined text-[28px]" aria-hidden="true">edit_note</span><h3 class="font-semibold mt-3">Input harian dari HP</h3><p class="text-[14px] text-secondary mt-1">Formulir sama persis dengan format Excel tiap divisi, rumus terhitung otomatis, foto bukti, dan tetap bisa diisi saat sinyal hilang.</p></article>
+      <article class="kartu p-5"><span class="material-symbols-outlined text-[28px]" aria-hidden="true">monitoring</span><h3 class="font-semibold mt-3">Dashboard per divisi</h3><p class="text-[14px] text-secondary mt-1">Target vs capaian, tren, tabel yang bisa dicari &amp; difilter, serta mode slide untuk presentasi rapat.</p></article>
+      <article class="kartu p-5"><span class="material-symbols-outlined text-[28px]" aria-hidden="true">assignment_late</span><h3 class="font-semibold mt-3">Isu lintas divisi otomatis</h3><p class="text-[14px] text-secondary mt-1">Angka yang melewati ambang (hama, EC/pH, reject, stok) langsung menjadi tiket dengan notifikasi dan eskalasi.</p></article>
+      <article class="kartu p-5"><span class="material-symbols-outlined text-[28px]" aria-hidden="true">fact_check</span><h3 class="font-semibold mt-3">Rekap &amp; persetujuan berjenjang</h3><p class="text-[14px] text-secondary mt-1">Laporan mingguan/bulanan disusun otomatis: SPV mengajukan, Manager menyetujui, Direktur mengesahkan.</p></article>
+      <article class="kartu p-5"><span class="material-symbols-outlined text-[28px]" aria-hidden="true">download</span><h3 class="font-semibold mt-3">Ekspor siap pakai</h3><p class="text-[14px] text-secondary mt-1">PDF, Excel, Word, dan PowerPoint — termasuk bundel catatan budidaya untuk kebutuhan GlobalGAP.</p></article>
+      <article class="kartu p-5"><span class="material-symbols-outlined text-[28px]" aria-hidden="true">shield_lock</span><h3 class="font-semibold mt-3">Hak akses &amp; jejak audit</h3><p class="text-[14px] text-secondary mt-1">Akses per peran dan divisi, serta log aktivitas berantai SHA-256 yang bisa diverifikasi.</p></article>
+    </div>
+  </section>
+
+  <section id="alur" class="border-y border-hairline bg-surface">
+    <div class="max-w-6xl mx-auto px-4 py-14">
+      <p class="font-mono text-[11px] tracking-wider text-secondary">CARA KERJA</p>
+      <h2 class="font-display text-[28px] font-semibold mt-1">Dari lapangan sampai meja Direktur</h2>
+      <ol class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-6">
+        <li class="kartu p-5"><span class="font-mono text-[12px] text-secondary">01</span><h3 class="font-semibold mt-2">Staf &amp; SPV input</h3><p class="text-[14px] text-secondary mt-1">Data harian dicatat langsung di aplikasi atau diimpor dari Excel.</p></li>
+        <li class="kartu p-5"><span class="font-mono text-[12px] text-secondary">02</span><h3 class="font-semibold mt-2">Sistem merangkum</h3><p class="text-[14px] text-secondary mt-1">Dashboard, persen, grafik, dan isu terbentuk otomatis.</p></li>
+        <li class="kartu p-5"><span class="font-mono text-[12px] text-secondary">03</span><h3 class="font-semibold mt-2">Manager meninjau</h3><p class="text-[14px] text-secondary mt-1">Setujui atau tolak laporan SPV, lalu teruskan ke Direktur.</p></li>
+        <li class="kartu p-5"><span class="font-mono text-[12px] text-secondary">04</span><h3 class="font-semibold mt-2">Direktur mengesahkan</h3><p class="text-[14px] text-secondary mt-1">Catatan arahan dan segel digital pada laporan final.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-4 py-14 text-center">
+    <h2 class="font-display text-[26px] font-semibold">Siap mulai bekerja?</h2>
+    <p class="text-secondary mt-2">Masuk dengan akun yang sudah didaftarkan oleh Manager.</p>
+    <a href="app.html#/masuk" class="tombol tombol-utama h-12 px-6 text-[15px] mt-5 inline-flex"><span class="material-symbols-outlined" aria-hidden="true">login</span>Masuk</a>
+    <div id="l-kontak" class="hidden mt-8 kartu p-4 text-left max-w-xl mx-auto"></div>
+  </section>
+</main>
+
+<footer class="border-t border-hairline">
+  <div class="max-w-6xl mx-auto px-4 py-6 flex flex-wrap items-center justify-between gap-3 font-mono text-[11px] text-secondary">
+    <span>© <span id="l-tahun"></span> PT. Agri Wangi Berry · Agri Wangi Berry Report <span id="l-versi">v1.0.0</span></span>
+    <button id="l-tema" class="tombol-ikon" aria-label="Ganti tema terang/gelap"><span class="material-symbols-outlined" aria-hidden="true">contrast</span></button>
+  </div>
+</footer>
+
+<script src="js/config.js?v=1.0.0"></script>
+<script>
+  // Landing: hanya teks publik (tagline/kontak/alamat diisi pemilik di Pengaturan → Landing Page). Tidak ada data internal.
+  (function () {
+    document.getElementById('l-tahun').textContent = new Date().getFullYear();
+    document.getElementById('l-tema').onclick = function () { var g = !document.documentElement.classList.contains('dark'); document.documentElement.classList.toggle('dark', g); try { localStorage.setItem('awb_tema', g ? 'gelap' : 'terang'); } catch (e) {} };
+    var C = window.APP_CONFIG || {}; if (!C.GAS_URL || /GANTI|XXXX/.test(C.GAS_URL)) return;
+    var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+    try { fetch(C.GAS_URL + '?w=pub', { mode: 'no-cors' }).catch(function () {}); } catch (e) {}
+    fetch(C.GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'landing', data: {} }) })
+      .then(function (r) { return r.json(); }).then(function (j) {
+        if (!j || !j.success) return; var d = j.data;
+        if (d.tagline) document.getElementById('l-tagline').textContent = d.tagline;
+        if (d.versi) document.getElementById('l-versi').textContent = 'v' + d.versi;
+        if (d.kontak || d.alamat) { var k = document.getElementById('l-kontak'); k.innerHTML = '<p class="font-mono text-[11px] text-secondary">KONTAK</p>' + (d.kontak ? '<p class="mt-1 whitespace-pre-wrap">' + esc(d.kontak) + '</p>' : '') + (d.alamat ? '<p class="mt-1 text-secondary whitespace-pre-wrap">' + esc(d.alamat) + '</p>' : ''); k.classList.remove('hidden'); }
+      }).catch(function () {});
+  })();
+</script>
+</body>
+</html>

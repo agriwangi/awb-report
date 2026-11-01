@@ -1,0 +1,71 @@
+/* Agri Wangi Berry Report v1.0.0 — gaya "Blueprint Precision" (0px radius · 1px garis · tanpa bayangan) */
+:root {
+  --c-background: 248 249 250; --c-surface: 255 255 255; --c-surface-low: 243 244 245; --c-surface-container: 237 238 239; --c-surface-high: 231 232 233;
+  --c-primary: 12 16 20; --c-on-primary: 255 255 255; --c-primary-container: 33 37 41; --c-secondary: 89 95 101;
+  --c-hairline: 233 236 239; --c-subtle: 222 226 230; --c-strong: 206 212 218;
+  --c-ok-ink: 43 138 62; --c-ok-bg: 235 251 238; --c-warn-ink: 183 121 31; --c-warn-bg: 255 244 214;
+  --c-crit-ink: 201 42 42; --c-crit-bg: 255 227 227; --c-info-ink: 25 113 194; --c-info-bg: 231 245 255;
+  color-scheme: light;
+}
+.dark {
+  --c-background: 15 17 19; --c-surface: 23 25 28; --c-surface-low: 20 22 24; --c-surface-container: 27 30 34; --c-surface-high: 34 38 43;
+  --c-primary: 241 243 245; --c-on-primary: 15 17 19; --c-primary-container: 222 226 230; --c-secondary: 144 146 150;
+  --c-hairline: 39 43 48; --c-subtle: 46 51 57; --c-strong: 56 61 67;
+  --c-ok-ink: 64 192 87; --c-ok-bg: 22 48 29; --c-warn-ink: 252 196 25; --c-warn-bg: 46 36 13;
+  --c-crit-ink: 255 107 107; --c-crit-bg: 51 19 19; --c-info-ink: 77 171 247; --c-info-bg: 16 35 54;
+  color-scheme: dark;
+}
+* { border-radius: 0 !important; box-shadow: none !important; }
+html.huruf-besar body { zoom: 1.12; }
+body { min-height: 100dvh; }
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20; font-size: 18px; line-height: 1; vertical-align: middle; }
+.label { font-size: 11px; line-height: 16px; letter-spacing: .05em; font-weight: 600; text-transform: uppercase; color: rgb(var(--c-secondary)); }
+.judul-bagian { font-size: 11px; letter-spacing: .05em; font-weight: 700; text-transform: uppercase; color: rgb(var(--c-primary)); padding-bottom: 6px; margin-bottom: 10px; border-bottom: 1px solid rgb(var(--c-hairline)); }
+.kartu { background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-hairline)); }
+.input { width: 100%; min-height: 36px; padding: 6px 10px; background: rgb(var(--c-surface)); color: rgb(var(--c-primary)); border: 1px solid rgb(var(--c-subtle)); font-size: 13px; }
+.input:focus { outline: 2px solid rgb(var(--c-primary)); outline-offset: -1px; }
+.input-galat { border-color: rgb(var(--c-crit-ink)) !important; }
+select.input { padding-right: 28px; }
+textarea.input { resize: vertical; }
+.tombol { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 0 12px; border: 1px solid rgb(var(--c-subtle)); background: rgb(var(--c-surface)); color: rgb(var(--c-primary)); font-weight: 600; font-size: 13px; white-space: nowrap; transition: background .15s; }
+.tombol:hover { background: rgb(var(--c-surface-low)); }
+.tombol:disabled { opacity: .5; cursor: not-allowed; }
+.tombol-utama { background: rgb(var(--c-primary)); color: rgb(var(--c-on-primary)); border-color: rgb(var(--c-primary)); }
+.tombol-utama:hover { background: rgb(var(--c-primary-container)); }
+.dark .tombol-utama:hover { background: #fff; }
+.tombol-bahaya { background: rgb(var(--c-crit-ink)); color: #fff; border-color: rgb(var(--c-crit-ink)); }
+.tombol-ikon { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid rgb(var(--c-subtle)); background: rgb(var(--c-surface)); color: rgb(var(--c-primary)); }
+.tombol-ikon:hover { background: rgb(var(--c-surface-low)); }
+.tombol-stepper { width: 48px; min-height: 48px; font-size: 22px; font-weight: 700; border: 1px solid rgb(var(--c-subtle)); background: rgb(var(--c-surface-low)); color: rgb(var(--c-primary)); }
+.tombol-stepper:active { background: rgb(var(--c-surface-high)); }
+@media (max-width: 1023px) { .tombol, .tombol-ikon, .input { min-height: 44px; } .tombol-ikon { width: 44px; height: 44px; } }
+:focus-visible { outline: 2px solid rgb(var(--c-primary)); outline-offset: 2px; }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 8px 12px; color: rgb(var(--c-secondary)); border-left: 2px solid transparent; font-size: 13px; }
+.nav-item:hover { background: rgb(var(--c-surface-low)); color: rgb(var(--c-primary)); }
+.nav-item.aktif { background: rgb(var(--c-surface-low)); color: rgb(var(--c-primary)); font-weight: 600; border-left-color: rgb(var(--c-primary)); }
+.tab { padding: 8px 12px; font-size: 13px; color: rgb(var(--c-secondary)); border-bottom: 2px solid transparent; white-space: nowrap; }
+.tab.aktif { color: rgb(var(--c-primary)); font-weight: 600; border-bottom-color: rgb(var(--c-primary)); }
+.chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border: 1px solid rgb(var(--c-subtle)); font-size: 12px; background: rgb(var(--c-surface)); color: rgb(var(--c-secondary)); }
+.chip.aktif { background: rgb(var(--c-primary)); color: rgb(var(--c-on-primary)); border-color: rgb(var(--c-primary)); }
+.tabel { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tabel th { text-align: left; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; font-weight: 600; color: rgb(var(--c-secondary)); padding: 8px 10px; border-bottom: 1px solid rgb(var(--c-hairline)); background: rgb(var(--c-surface-low)); white-space: nowrap; position: sticky; top: 0; z-index: 1; }
+.tabel td { padding: 8px 10px; border-bottom: 1px solid rgb(var(--c-hairline)); vertical-align: top; }
+.tabel tbody tr:hover { background: rgb(var(--c-surface-low)); }
+.tabel .angka { font-family: 'JetBrains Mono', monospace; text-align: right; white-space: nowrap; }
+.skeleton { background: linear-gradient(90deg, rgb(var(--c-surface-low)) 25%, rgb(var(--c-surface-high)) 50%, rgb(var(--c-surface-low)) 75%); background-size: 200% 100%; animation: kilau 1.2s infinite linear; border: 1px solid rgb(var(--c-hairline)); }
+@keyframes kilau { to { background-position: -200% 0; } }
+.drawer-masuk { animation: drawerMasuk .2s ease-out; } @keyframes drawerMasuk { from { transform: translateX(40px); opacity: .5; } }
+.modal-masuk { animation: modalMasuk .18s ease-out; } @keyframes modalMasuk { from { transform: translateY(16px); opacity: .6; } }
+.toast-masuk { animation: modalMasuk .2s ease-out; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+.blueprint { background-image: linear-gradient(to right, rgb(var(--c-hairline)) 1px, transparent 1px), linear-gradient(to bottom, rgb(var(--c-hairline)) 1px, transparent 1px); background-size: 24px 24px; }
+.whys { position: relative; padding-left: 28px; } .whys::before { content: ''; position: absolute; left: 11px; top: 6px; bottom: 6px; width: 1px; background: rgb(var(--c-strong)); }
+.whys-no { position: absolute; left: 0; width: 23px; height: 23px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-strong)); }
+.slide { position: fixed; inset: 0; z-index: 95; background: rgb(var(--c-background)); display: flex; flex-direction: column; }
+.peta-panas td { text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+.scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.pb-aman { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+@media (min-width: 1024px) { .pb-aman { padding-bottom: 24px; } }
+@media print { aside, header, nav, .no-print, [data-tutup], #toast-wrap { display: none !important; } [role=dialog] { position: static !important; } body { background: #fff; } }
+/* Ikon: lebar tetap 1em agar tata letak tidak bergeser selama font ikon dimuat */
+.material-symbols-outlined { display: inline-block; width: 1em; overflow: hidden; white-space: nowrap; flex-shrink: 0; vertical-align: middle; }
