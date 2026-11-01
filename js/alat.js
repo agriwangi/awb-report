@@ -1,17 +1,22 @@
-/* Agri Wangi Berry Report v1.0.0 — alat: tabel data generik, ekspor (PDF/PPT/Excel/Word/CSV), mode slide, wizard impor Excel */
+/* Agri Wangi Berry Report v1.2.0 — alat: tabel data generik, ekspor (PDF/PPT/Excel/Word/CSV), mode slide, wizard impor Excel */
 (function () {
   const { $, $$, esc, ik, num, badge, toast, overlay, kepala, konfirmasi, skeleton, kosong, galat, formulir, detailRekaman, hariIni, tambahHari, tglID } = UI;
   const unduh = (blob, nama) => { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nama; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500); };
   const stempel = () => new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 16).replace('T', ' ') + ' WIB';
   const tunggu = (cek, ms) => new Promise((res, rej) => { const t0 = Date.now(); (function l() { if (cek()) return res(); if (Date.now() - t0 > (ms || 15000)) return rej(new Error('Pustaka belum termuat. Periksa koneksi internet.')); setTimeout(l, 120); })(); });
+  /* v1.2: pustaka berat (Excel/PDF/PPT ±1,9 MB) dimuat saat pertama dipakai, bukan saat aplikasi dibuka */
+  const PUSTAKA = { xlsx: ['https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'], pdf: ['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js'], ppt: ['https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js'] };
+  const _dimuat = {};
+  function skrip(src) { return _dimuat[src] || (_dimuat[src] = new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => { delete _dimuat[src]; rej(new Error('Gagal memuat pustaka — periksa koneksi internet.')); }; document.head.appendChild(s); })); }
+  async function muat(nama) { for (const src of PUSTAKA[nama]) await skrip(src); }
   async function sha256Teks(s) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join(''); }
 
   /* ======================= EKSPOR ======================= */
   const Ekspor = {
-    async xlsx(nama, lembar) { await tunggu(() => window.XLSX); const wb = XLSX.utils.book_new(); lembar.forEach(l => { const ws = Array.isArray(l.rows[0]) ? XLSX.utils.aoa_to_sheet(l.rows) : XLSX.utils.json_to_sheet(l.rows.length ? l.rows : [{ Info: 'Tidak ada data' }]); XLSX.utils.book_append_sheet(wb, ws, String(l.nama).replace(/[\\/?*[\]:]/g, ' ').slice(0, 31)); }); XLSX.writeFile(wb, nama + '.xlsx'); },
+    async xlsx(nama, lembar) { await muat('xlsx'); await tunggu(() => window.XLSX); const wb = XLSX.utils.book_new(); lembar.forEach(l => { const ws = Array.isArray(l.rows[0]) ? XLSX.utils.aoa_to_sheet(l.rows) : XLSX.utils.json_to_sheet(l.rows.length ? l.rows : [{ Info: 'Tidak ada data' }]); XLSX.utils.book_append_sheet(wb, ws, String(l.nama).replace(/[\\/?*[\]:]/g, ' ').slice(0, 31)); }); XLSX.writeFile(wb, nama + '.xlsx'); },
     csv(nama, rows) { if (!rows.length) return toast('Tidak ada data untuk diekspor.', 'warn'); const k = Object.keys(rows[0]); const q = v => '"' + String(v === undefined || v === null ? '' : v).replace(/"/g, '""') + '"'; unduh(new Blob(['﻿' + [k.map(q).join(',')].concat(rows.map(r => k.map(x => q(r[x])).join(','))).join('\r\n')], { type: 'text/csv;charset=utf-8' }), nama + '.csv'); },
     async pdf(nama, judul, sub, blok, opt) {
-      opt = opt || {}; await tunggu(() => window.jspdf && window.jspdf.jsPDF && window.jspdf.jsPDF.API.autoTable);
+      opt = opt || {}; await muat('pdf'); await tunggu(() => window.jspdf && window.jspdf.jsPDF && window.jspdf.jsPDF.API.autoTable);
       const doc = new jspdf.jsPDF({ orientation: opt.lanskap ? 'landscape' : 'portrait', unit: 'mm', format: 'a4' }); const W = doc.internal.pageSize.getWidth();
       doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.text(judul, 14, 16); doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(90); doc.text(sub || '', 14, 22); doc.text('PT. Agri Wangi Berry · Agri Wangi Berry Report · ' + stempel(), 14, 27); doc.setDrawColor(200); doc.line(14, 30, W - 14, 30); doc.setTextColor(0);
       let y = 36;
@@ -27,7 +32,7 @@
     },
     word(nama, judul, html) { const doc = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>${esc(judul)}</title><style>body{font-family:Calibri,Arial;font-size:11pt}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:3px 5px;font-size:9pt}th{background:#212529;color:#fff}h1{font-size:16pt}h2{font-size:12pt;border-bottom:1px solid #ccc}</style></head><body><h1>${esc(judul)}</h1><p style="color:#555">PT. Agri Wangi Berry · ${stempel()}</p>${html}</body></html>`; unduh(new Blob(['﻿', doc], { type: 'application/msword' }), nama + '.doc'); },
     async ppt(nama, judul, slides) {
-      await tunggu(() => window.PptxGenJS); const p = new PptxGenJS(); p.layout = 'LAYOUT_WIDE'; p.title = judul;
+      await muat('ppt'); await tunggu(() => window.PptxGenJS); const p = new PptxGenJS(); p.layout = 'LAYOUT_WIDE'; p.title = judul;
       const s0 = p.addSlide(); s0.background = { color: '0C1014' }; s0.addText(judul, { x: 0.6, y: 2.4, w: 12, h: 1, fontSize: 32, bold: true, color: 'FFFFFF', fontFace: 'Arial' }); s0.addText('PT. Agri Wangi Berry · ' + stempel(), { x: 0.6, y: 3.5, w: 12, h: 0.5, fontSize: 14, color: 'ADB5BD' });
       slides.forEach(sl => {
         const s = p.addSlide(); s.addText(sl.judul, { x: 0.5, y: 0.3, w: 12.3, h: 0.6, fontSize: 22, bold: true, color: '0C1014' }); s.addShape(p.ShapeType.line, { x: 0.5, y: 0.95, w: 12.3, h: 0, line: { color: 'CED4DA', width: 1 } });
@@ -189,7 +194,7 @@
       const tb = $('#imp-tabel', main); if (tb) tb.onchange = () => { st.tabel = tb.value; gambar(); };
       $('#imp-template', main).onclick = async (e) => { e.preventDefault(); const sk = skema(); await Ekspor.xlsx('Template_' + sk.key, [{ nama: sk.judul, rows: [sk.f.filter(f => f.t !== 'calc' && f.t !== 'auto' && f.t !== 'foto').map(f => f.k)] }]); };
       const fi = $('#imp-file', main), drop = $('#imp-drop', main);
-      const muatFile = async (file) => { $('#imp-status', main).textContent = 'Membaca ' + file.name + '…'; try { await tunggu(() => window.XLSX); const buf = await file.arrayBuffer(); st.wb = XLSX.read(buf, { type: 'array', cellDates: false }); st.namaFile = file.name; st.lembar = st.wb.SheetNames[0]; st.unpivot = false; bacaLembar(); st.unpivot = st.hdr.some(h => /^items_\d+_/.test(h)); if (st.unpivot) bacaLembar(); st.langkah = 2; gambar(); } catch (e) { $('#imp-status', main).textContent = 'Gagal membaca berkas: ' + e.message; } };
+      const muatFile = async (file) => { $('#imp-status', main).textContent = 'Membaca ' + file.name + '…'; try { await muat('xlsx'); await tunggu(() => window.XLSX); const buf = await file.arrayBuffer(); st.wb = XLSX.read(buf, { type: 'array', cellDates: false }); st.namaFile = file.name; st.lembar = st.wb.SheetNames[0]; st.unpivot = false; bacaLembar(); st.unpivot = st.hdr.some(h => /^items_\d+_/.test(h)); if (st.unpivot) bacaLembar(); st.langkah = 2; gambar(); } catch (e) { $('#imp-status', main).textContent = 'Gagal membaca berkas: ' + e.message; } };
       if (fi) fi.onchange = () => fi.files[0] && muatFile(fi.files[0]);
       if (drop) { drop.ondragover = e => { e.preventDefault(); drop.classList.add('bg-surface-low'); }; drop.ondragleave = () => drop.classList.remove('bg-surface-low'); drop.ondrop = e => { e.preventDefault(); if (e.dataTransfer.files[0]) muatFile(e.dataTransfer.files[0]); }; }
       const lb = $('#imp-lembar', main), hd = $('#imp-hdr', main), bw = $('#imp-bawah', main), up = $('#imp-unpivot', main);
@@ -214,5 +219,5 @@
     gambar();
   }
 
-  window.Alat = { Ekspor, menuEkspor, modeSlide, TabelData, halImpor, unduh, sha256Teks, tunggu, stempel };
+  window.Alat = { muat, Ekspor, menuEkspor, modeSlide, TabelData, halImpor, unduh, sha256Teks, tunggu, stempel };
 })();

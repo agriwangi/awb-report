@@ -1,14 +1,29 @@
 <!DOCTYPE html>
-<!-- Agri Wangi Berry Report v1.1.0 — LANDING PAGE PUBLIK (multi-model, 11 model)        [ MANDIRI · GitHub Pages ] -->
+<!-- Agri Wangi Berry Report v1.2.0 — LANDING PAGE PUBLIK (multi-model, 11 model, SEO)        [ MANDIRI · GitHub Pages ] -->
 <html lang="id">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Agri Wangi Berry Report — PT. Agri Wangi Berry</title>
-<meta name="description" content="Agri Wangi Berry Report — pencatatan harian lintas divisi dan laporan mingguan/bulanan PT. Agri Wangi Berry.">
+<title>Agri Wangi Berry Report — Laporan Kebun Stroberi PT. Agri Wangi Berry</title>
+<meta name="description" content="Sistem laporan harian lintas divisi PT. Agri Wangi Berry: greenhouse, packing, hama & penyakit, dan fertigasi — dashboard, rekap mingguan/bulanan, dan persetujuan berjenjang.">
 <meta name="theme-color" content="#1D4B4B">
-<meta name="robots" content="noindex">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://agriwangi.github.io/awb-report/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="id_ID">
+<meta property="og:site_name" content="Agri Wangi Berry Report">
+<meta property="og:title" content="Agri Wangi Berry Report — PT. Agri Wangi Berry">
+<meta property="og:description" content="Laporan harian lintas divisi, rekap otomatis, dan persetujuan berjenjang untuk kebun stroberi PT. Agri Wangi Berry.">
+<meta property="og:url" content="https://agriwangi.github.io/awb-report/">
+<meta property="og:image" content="https://agriwangi.github.io/awb-report/assets/og-image.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Agri Wangi Berry Report — PT. Agri Wangi Berry">
+<meta name="twitter:description" content="Laporan harian lintas divisi, rekap otomatis, dan persetujuan berjenjang.">
+<meta name="twitter:image" content="https://agriwangi.github.io/awb-report/assets/og-image.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","name":"PT. Agri Wangi Berry","url":"https://agriwangi.github.io/Berry/","logo":"https://agriwangi.github.io/awb-report/assets/logo-awb.png"},{"@type":"WebApplication","name":"Agri Wangi Berry Report","url":"https://agriwangi.github.io/awb-report/","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"id","description":"Sistem laporan harian lintas divisi kebun stroberi: greenhouse, packing & pengiriman, hama & penyakit, fertigasi.","publisher":{"@type":"Organization","name":"PT. Agri Wangi Berry"}}]}</script>
 <link rel="icon" href="assets/favicon.png">
+<link rel="preload" href="js/landing.js?v=1.2.0" as="script">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://lh3.googleusercontent.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -28,10 +43,20 @@
   .lp-btn:focus-visible { outline: 3px solid var(--a); outline-offset: 2px; }
   .lp-btn svg { width: 18px; height: 18px; }
   #lp-host { display: block; min-height: 70vh; }
-  .lp-skel { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
-  .lp-skel div { height: 420px; border-radius: 18px; background: linear-gradient(90deg, #eef1f0 25%, #e3e7e6 37%, #eef1f0 63%); background-size: 400% 100%; animation: sk 1.4s ease infinite; }
-  @keyframes sk { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
-  @media (prefers-reduced-motion: reduce) { .lp-skel div { animation: none; } }
+  /* Konten statis: langsung tampil (tanpa layar loading) & terbaca mesin pencari; diganti model landing begitu siap */
+  .lp-st .hero { position: relative; margin: 16px auto 0; max-width: 1200px; border-radius: 20px; overflow: hidden; min-height: 440px; display: flex; align-items: flex-end; color: #fff; background: #1D4B4B center/cover no-repeat url('assets/masuk-default.jpg'); }
+  .lp-st .hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.82), rgba(0,0,0,.25)); }
+  .lp-st .hero > div { position: relative; padding: 40px 32px; max-width: 760px; }
+  .lp-st .eb { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; opacity: .9; }
+  .lp-st h1 { font-size: clamp(32px, 5vw, 52px); line-height: 1.08; margin: 10px 0 14px; }
+  .lp-st .hero p { font-size: 18px; opacity: .95; margin: 0 0 22px; }
+  .lp-st section.isi { max-width: 1200px; margin: 0 auto; padding: 56px 16px 0; }
+  .lp-st h2 { font-size: 28px; margin: 0 0 18px; }
+  .lp-st .g4 { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+  .lp-st .k { border: 1px solid #e3e8e6; border-radius: 14px; padding: 18px; background: #fff; }
+  .lp-st .k h3 { margin: 0 0 6px; font-size: 17px; } .lp-st .k p { margin: 0; color: #4d5a57; font-size: 15px; line-height: 1.5; }
+  .lp-st ol { padding-left: 20px; color: #2c3836; line-height: 1.8; }
+  @media (max-width: 600px) { .lp-st .hero { background-image: url('assets/masuk-default-hp.jpg'); margin: 0; border-radius: 0; min-height: 380px; } .lp-st .hero > div { padding: 28px 16px; } }
   .lp-foot { background: var(--p); color: #fff; }
   .lp-foot .in { max-width: 1200px; margin: 0 auto; padding: 28px 16px; display: flex; flex-wrap: wrap; gap: 16px 32px; justify-content: space-between; font-size: 14px; }
   .lp-foot .kt { opacity: .92; line-height: 1.6; }
@@ -53,19 +78,28 @@
 </header>
 
 <main>
-  <div id="lp-host"><div class="lp-skel" aria-hidden="true"><div></div></div></div>
+  <div id="lp-host"><div class="lp-st">
+    <section class="hero"><div><div class="eb">Sistem laporan internal PT. Agri Wangi Berry</div><h1>Agri Wangi Berry Report</h1><p>Laporan harian lintas divisi, rekap otomatis, persetujuan berjenjang.</p><a class="lp-btn" href="app.html#/masuk" style="background:#C8102E">Masuk ke Aplikasi</a></div></section>
+    <section class="isi"><h2>Satu tempat untuk data kebun</h2><p>Agri Wangi Berry Report mencatat seluruh kegiatan harian kebun — greenhouse, packing &amp; pengiriman, hama &amp; penyakit, serta fertigasi — lalu merangkumnya menjadi dashboard dan laporan mingguan/bulanan yang disetujui berjenjang sampai Direktur.</p></section>
+    <section class="isi"><h2>Yang bisa dilakukan</h2><div class="g4">
+      <article class="k"><h3>Input harian dari HP</h3><p>Formulir sama dengan format Excel tiap divisi, rumus terhitung otomatis, lengkap dengan foto bukti.</p></article>
+      <article class="k"><h3>Dashboard per divisi</h3><p>Target vs capaian, tren, tabel yang bisa dicari, dan mode slide untuk rapat.</p></article>
+      <article class="k"><h3>Isu lintas divisi otomatis</h3><p>Angka yang melewati ambang langsung menjadi tiket dengan notifikasi dan eskalasi.</p></article>
+      <article class="k"><h3>Persetujuan berjenjang</h3><p>SPV mengajukan, Manager menyetujui, Direktur mengesahkan dengan segel digital.</p></article></div></section>
+    <section class="isi" style="padding-bottom:56px"><h2>Dari lapangan sampai meja Direktur</h2><ol><li>Staf &amp; SPV input data harian atau impor dari Excel.</li><li>Sistem merangkum dashboard, persen, grafik, dan isu.</li><li>Manager meninjau dan meneruskan ke Direktur.</li><li>Direktur mengesahkan laporan final.</li></ol></section>
+  </div></div>
 </main>
 
 <footer class="lp-foot">
   <div class="in">
     <div><b>PT. Agri Wangi Berry</b><div class="kt" id="lp-kontak"></div></div>
-    <div class="ver">© <span id="lp-tahun"></span> · Agri Wangi Berry Report <span id="lp-versi">v1.1.0</span></div>
+    <div class="ver">© <span id="lp-tahun"></span> · Agri Wangi Berry Report <span id="lp-versi">v1.2.0</span></div>
   </div>
 </footer>
 
-<script src="js/config.js?v=1.1.0"></script>
-<script src="js/landing.js?v=1.1.0"></script>
-<script src="js/landing-awb.js?v=1.1.0"></script>
+<script src="js/config.js?v=1.2.0"></script>
+<script src="js/landing.js?v=1.2.0"></script>
+<script src="js/landing-awb.js?v=1.2.0"></script>
 <script>
   /* Landing publik: konten & model diambil dari server (Pengaturan → Landing Page, diatur Manager).
    * Bila server belum diatur / tidak terjangkau, tampil konten bawaan (tetap model yang sama). */

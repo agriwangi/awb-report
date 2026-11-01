@@ -1,4 +1,4 @@
-/* Agri Wangi Berry Report v1.0.0 — router, shell (sidebar/topbar/bottom-nav), boot */
+/* Agri Wangi Berry Report v1.2.0 — router, shell (sidebar/topbar/bottom-nav), boot */
 (function () {
   const { $, $$, esc, ik, toast, overlay, kepala, konfirmasi, galat } = UI;
   const H = () => window.Halaman;
@@ -81,11 +81,25 @@
     if (!API.Sesi.token) { shellSiap = false; if (!/^#\/masuk/.test(location.hash)) location.hash = '#/masuk'; return rute(); }
     try {
       await API.swr('boot', {}, (d) => { const awal = !window.B; window.B = d; if (awal || !shellSiap) { pasangShell(); rute(); } else { setNotif(d.notifBelum); } }, 0);
-      bootT = Date.now(); jalankanPolling();
+      bootT = Date.now(); jalankanPolling(); jadwalPrefetch();
     } catch (e) {
       if (!API.Sesi.token) return;
       document.getElementById('app').innerHTML = `<div class="min-h-screen flex items-center justify-center p-4"><div class="max-w-md w-full">${galat(e.message, 'boot-ulang')}</div></div>`; $('#boot-ulang').onclick = mulai;
     }
+  }
+  /* v1.2: saat browser senggang, data halaman utama disiapkan di cache lokal (1 eksekusi server, digabung batch)
+     sehingga pindah menu langsung tampil tanpa layar loading. */
+  function jadwalPrefetch() {
+    const jalan = () => {
+      const B = window.B; if (!B || !navigator.onLine) return;
+      const s = UI.hariIni(), r7 = { dari: UI.tambahHari(s, -6), sampai: s }, kosong = () => { };
+      API.swr('beranda', {}, kosong, 120000).catch(kosong);
+      if ((B.hak.DASH_UTAMA || '').includes('R')) API.swr('dashboard', r7, kosong, 120000).catch(kosong);
+      (B.terlihat || []).slice(0, 5).forEach(d => API.swr('divisi.ringkas', Object.assign({ div: d }, r7), kosong, 120000).catch(kosong));
+      if ((B.hak.ISU || '').includes('R')) API.apiQ('isu.list', { status: '', divisi: '', tingkat: '', q: '' }).catch(kosong);
+      if ((B.hak.IMPOR || '').includes('W')) setTimeout(() => Alat.muat('xlsx').catch(kosong), 4000);
+    };
+    if ('requestIdleCallback' in window) requestIdleCallback(jalan, { timeout: 3000 }); else setTimeout(jalan, 1500);
   }
   async function bootUlang() { const r = await API.api('boot', {}); if (r.success) { window.B = r.data; try { localStorage.setItem('awb_swr_boot{}', JSON.stringify({ t: Date.now(), d: r.data })); } catch (e) { } pasangShell(); rute(); } }
   function jalankanPolling() {

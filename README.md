@@ -1,4 +1,4 @@
-# Agri Wangi Berry Report — Frontend v1.1.0  🟩 MANDIRI (GitHub Pages)
+# Agri Wangi Berry Report — Frontend v1.2.0  🟩 MANDIRI (GitHub Pages)
 
 Frontend statis untuk aplikasi laporan harian lintas divisi PT. Agri Wangi Berry (GH1, GH2, Packing & Pengiriman, HPT, Fertigasi). Backend berupa Google Apps Script REST API (`Kode.gs`, terpisah, **tidak** disertakan di repository ini).
 
@@ -8,6 +8,9 @@ Frontend statis untuk aplikasi laporan harian lintas divisi PT. Agri Wangi Berry
 index.html        Landing page publik multi-model (11 model) → tombol Masuk
 app.html          Aplikasi (SPA, router hash #/...)
 css/app.css       Token warna terang/gelap + komponen
+css/tw.css        Kelas Tailwind yang sudah dibangun (tools/bangun-css.sh) — tanpa CDN
+sitemap.xml       Peta situs untuk Google Search Console
+assets/           Logo, favicon, foto halaman Masuk (masuk-default*.jpg), og-image.jpg
 js/config.js      SATU-SATUNYA yang perlu diubah: GAS_URL (/exec)
 js/api.js         fetch ke GAS: batch, dedupe, SWR, antrean offline, Perf.table()
 js/ui.js          Komponen UI: kartu KPI, grafik, formulir, modal, toast
@@ -33,4 +36,4 @@ Tidak ada rahasia di frontend. Client ID Google diambil dari server (`auth.confi
 
 `#/masuk` · `#/masuk/darurat` · `#/beranda` · `#/dashboard` · `#/div/GH1|GH2|PACKING|HPT|FERTIGASI[?tab=TABEL]` · `#/input` · `#/isu[/ID]` · `#/gagasan` · `#/notifikasi` · `#/laporan[/ID]` · `#/ekspor` · `#/audit` · `#/pengaturan?tab=...` · `#/impor`
 
-Panduan lengkap ada di `PANDUAN-INSTALASI-v1.1.md`.
+Panduan lengkap ada di `PANDUAN-INSTALASI-v1.2.md`.

@@ -1,4 +1,4 @@
-/* Agri Wangi Berry Report v1.1.0 — isi landing page untuk mesin multi-model (js/landing.js)   [ MANDIRI ]
+/* Agri Wangi Berry Report v1.2.0 — isi landing page untuk mesin multi-model (js/landing.js)   [ MANDIRI ]
  * Dipakai oleh index.html (landing publik) dan oleh pratinjau di Pengaturan → Landing Page.
  * Isi hanya fakta tentang aplikasi + teks yang diisi Manager. Tidak ada angka, testimoni, atau kontak karangan. */
 (function () {
@@ -16,7 +16,8 @@
 
   function konten(cfg) {
     const c = gabung(cfg);
-    const img = c.gambar.map(g => g.url || g).filter(Boolean);
+    const asli = c.gambar.map(g => g.url || g).filter(Boolean);
+    const img = asli.length ? asli : ['assets/masuk-default.jpg'];   // v1.2: tanpa unggahan → foto kebun bawaan, bukan gradasi
     const gb = (i) => img[i] || ('art:' + i);           // tanpa gambar → gradasi warna merek (bukan foto karangan)
     const fitur = [
       { icon: 'leaf', title: 'Input harian dari HP', text: 'Formulir sama dengan format Excel tiap divisi, rumus terhitung otomatis, lengkap dengan foto bukti.', image: gb(0) },
@@ -45,11 +46,11 @@
         { title: 'Sistem merangkum', text: 'Dashboard, persen, grafik, dan isu terbentuk otomatis.' },
         { title: 'Manager meninjau', text: 'Laporan SPV disetujui atau dikembalikan, lalu diteruskan ke Direktur.' },
         { title: 'Direktur mengesahkan', text: 'Catatan arahan dan segel digital pada laporan final.' }] },
-      gallery: { eyebrow: 'Galeri', title: 'Kegiatan Kebun', images: img.slice(0, 6) },
+      gallery: { eyebrow: 'Galeri', title: 'Kegiatan Kebun', images: asli.slice(0, 6) },
       testi: { title: '', items: [] },
       faq: { eyebrow: 'FAQ', title: 'Pertanyaan Umum', items: faq },
       cta: { title: 'Siap mulai bekerja?', text: 'Masuk dengan akun yang sudah didaftarkan Manager.', label: 'Masuk', link: MASUK },
-      show: { about: true, features: true, stats: true, products: false, steps: true, gallery: img.length > 0, testi: false, faq: true, cta: true }
+      show: { about: true, features: true, stats: true, products: false, steps: true, gallery: asli.length > 0, testi: false, faq: true, cta: true }
     };
   }
 
