@@ -1,4 +1,4 @@
-/* Agri Wangi Berry Report v1.0.0 — halaman-halaman SPA */
+/* Agri Wangi Berry Report v1.1.0 — halaman-halaman SPA */
 (function () {
   const { $, $$, esc, ik, num, badge, toast, overlay, kepala, konfirmasi, skeleton, kosong, galat, kartuKPI, grafik, hariIni, tambahHari, tglID, waktuRelatif } = UI;
   const { Ekspor, menuEkspor, modeSlide, TabelData } = Alat;
@@ -462,11 +462,7 @@
       $('#ks').onsubmit = async e => { e.preventDefault(); const v = e.target.v.value.trim(); if (!v) return; const x = await API.api('rahasia.simpan', { kunci: 'GOOGLE_CLIENT_ID', nilai: v }); toast(x.message, x.success ? 'ok' : 'crit'); if (x.success) halPengaturan(main, q); };
       const h = $('#ks-hapus'); if (h) h.onclick = async () => { const x = await API.api('rahasia.simpan', { kunci: 'GOOGLE_CLIENT_ID', nilai: '__HAPUS__' }); toast(x.message, x.success ? 'ok' : 'crit'); halPengaturan(main, q); };
     }
-    if (tab === 'landing' && manager) {
-      const r = await API.api('pengaturan.get', {}); const L = r.data.rows.filter(x => x.Divisi === 'LANDING');
-      isi.innerHTML = panel('Isi Landing Page Publik', `<p class="text-body-sm text-secondary mb-3">Landing tidak menampilkan data internal. Kontak & alamat diisi pemilik — tidak dikarang sistem.</p><form id="lp" class="space-y-3">${L.map(x => `<label class="block"><span class="label">${esc(x.Label)}</span><textarea class="input mt-1" rows="2" name="${esc(x.Kunci)}" data-awal="${esc(x.Nilai)}">${esc(x.Nilai)}</textarea></label>`).join('')}<button class="tombol tombol-utama">${ik('save')}Simpan</button></form>`);
-      $('#lp').onsubmit = async e => { e.preventDefault(); const ubah = $$('#lp textarea').filter(t => t.value !== t.dataset.awal).map(t => ({ Kunci: t.name, Nilai: t.value })); if (!ubah.length) return; const s = await API.api('pengaturan.simpan', { ubah }); toast(s.message, s.success ? 'ok' : 'crit'); };
-    }
+    if (tab === 'landing' && manager) await editorLanding(isi);
     if (tab === 'migrasi' && manager) {
       isi.innerHTML = panel('Migrasi dari Spreadsheet Lama (sumber hanya DIBACA)', `<form id="mg" class="grid sm:grid-cols-2 gap-3"><label class="sm:col-span-2"><span class="label">URL / ID spreadsheet lama</span><input class="input mt-1 font-mono" name="sumber" required placeholder="https://docs.google.com/spreadsheets/d/…"></label><label><span class="label">Nama sheet</span><input class="input mt-1" name="sheet" required placeholder="Data"></label><label><span class="label">Baris header</span><input class="input mt-1 font-mono" type="number" min="1" name="barisHeader" value="1"></label><label class="sm:col-span-2"><span class="label">Tabel tujuan</span><select class="input mt-1" name="tabel">${B().tabel.map(t => `<option value="${t.key}">${esc((t.master ? 'Master' : t.div) + ' · ' + t.judul)}</option>`).join('')}</select></label><div class="sm:col-span-2 flex gap-2"><button class="tombol" data-m="pindai">${ik('search')}Pindai (dry-run)</button><button class="tombol tombol-utama" data-m="jalankan">${ik('play_arrow')}Jalankan Migrasi</button></div></form><div id="mg-h" class="mt-3"></div><p class="text-body-sm text-secondary mt-3">Kolom dicocokkan berdasarkan <b>nama header</b>. Aman diulang (baris dengan ID sama diperbarui, bukan digandakan). Gunakan akun Google yang sama dengan pemilik spreadsheet lama.</p>`);
       $('#mg').onclick = async e => { const b = e.target.closest('[data-m]'); if (!b) return; e.preventDefault(); const f = new FormData($('#mg')); const d = {}; f.forEach((v, k) => d[k] = v); if (!d.sumber || !d.sheet) return toast('Isi URL dan nama sheet.', 'warn'); if (b.dataset.m === 'jalankan' && !(await konfirmasi('Jalankan migrasi?', 'Data dari spreadsheet lama akan ditambahkan ke tabel tujuan.', { label: 'Jalankan' }))) return; b.disabled = true; const r = await API.api('migrasi.' + b.dataset.m, d); b.disabled = false; $('#mg-h').innerHTML = r.success ? `<pre class="font-mono text-[11px] bg-surface-low border border-hairline p-3 whitespace-pre-wrap">${esc(JSON.stringify(r.data, null, 2))}</pre>` : galat(r.message); if (r.success) toast(r.message || 'Pindai selesai.'); };
@@ -475,6 +471,77 @@
       const t0 = performance.now(); const r = await API.api('ping', {}); const ms = Math.round(performance.now() - t0);
       isi.innerHTML = panel('Info Sistem', `<dl class="grid grid-cols-2 gap-2 font-mono text-[12px]"><dt class="text-secondary">Versi frontend</dt><dd>${esc(window.APP_CONFIG.VERSI)}</dd><dt class="text-secondary">Versi server</dt><dd>${esc(r.v || '—')}</dd><dt class="text-secondary">Waktu respons</dt><dd>${ms} ms (server ${esc(r.ms)} ms)</dd><dt class="text-secondary">Antrean offline</dt><dd>${API.Antrean.ambil().length} data</dd><dt class="text-secondary">Endpoint</dt><dd class="break-all">${esc(window.APP_CONFIG.GAS_URL.replace(/\/s\/(.{6}).+(\/exec)/, '/s/$1…$2'))}</dd></dl><p class="text-body-sm text-secondary mt-3">Ketik <code>Perf.table()</code> di konsol browser untuk melihat waktu tiap panggilan.</p><div class="flex gap-2 mt-3"><button class="tombol" onclick="localStorage.clear();location.reload()">${ik('cleaning_services')}Bersihkan cache lokal</button></div>`);
     }
+  }
+
+
+  /* ====================== EDITOR LANDING PAGE (Manager) — 11 model, slide gambar, video, warna, teks ====================== */
+  function muatSkrip(src, cek) { return new Promise((res, rej) => { if (cek()) return res(); const s = document.createElement('script'); s.src = src; s.onload = () => res(); s.onerror = () => rej(new Error('Gagal memuat ' + src)); document.head.appendChild(s); }); }
+  const PETA_LANDING = { model: 'LANDING_MODEL', warna: 'LANDING_WARNA', warnaUtama: 'LANDING_WARNA_UTAMA', warnaKedua: 'LANDING_WARNA_KEDUA', warnaLatar: 'LANDING_WARNA_LATAR', judul: 'LANDING_JUDUL', slogan: 'LANDING_SLOGAN', tagline: 'LANDING_TAGLINE', tentang: 'LANDING_TENTANG', video: 'LANDING_VIDEO', telepon: 'LANDING_TELEPON', email: 'LANDING_EMAIL', jam: 'LANDING_JAM', alamat: 'LANDING_ALAMAT', kontak: 'LANDING_KONTAK' };
+  async function editorLanding(isi) {
+    isi.innerHTML = skeleton(4, 'h-24');
+    const v = window.APP_CONFIG.VERSI;
+    try { await muatSkrip('js/landing.js?v=' + v, () => window.AWL); await muatSkrip('js/landing-awb.js?v=' + v, () => window.AWBLanding); } catch (e) { isi.innerHTML = galat(e.message); return; }
+    const r = await API.api('landing', {}); if (!r.success) { isi.innerHTML = galat(r.message); return; }
+    const awal = AWBLanding.gabung(r.data), st = JSON.parse(JSON.stringify(awal)); let lebar = 'desktop';
+    const fld = (k, l, tipe, ph, bantu) => `<label class="block"><span class="label">${l}</span>${tipe === 'area' ? `<textarea class="input mt-1" rows="3" data-f="${k}" placeholder="${esc(ph || '')}">${esc(st[k])}</textarea>` : `<input class="input mt-1" data-f="${k}" value="${esc(st[k])}" placeholder="${esc(ph || '')}" ${tipe === 'url' ? 'inputmode="url"' : ''}>`}${bantu ? `<span class="block font-mono text-[10px] text-secondary mt-0.5">${bantu}</span>` : ''}</label>`;
+    isi.innerHTML = `<div class="grid xl:grid-cols-[minmax(0,440px)_1fr] gap-4 items-start">
+      <div class="space-y-3 min-w-0">
+        ${panel('1. Model Tampilan', `<p class="text-body-sm text-secondary mb-2">Pilih satu dari 11 model landing. Isi tetap sama, hanya gaya yang berganti.</p><div class="grid grid-cols-2 gap-2" id="le-model">${AWL.MODELS.map(m => `<button type="button" class="text-left border p-2 min-h-[44px] hover:border-primary ${st.model === m.k ? 'border-primary border-2 bg-surface-low' : 'border-hairline'}" data-model="${m.k}" aria-pressed="${st.model === m.k}"><span class="flex gap-0.5 mb-1">${m.c.map(w => `<span class="w-4 h-4 border border-hairline" style="background:${w}"></span>`).join('')}</span><span class="block font-semibold text-body-sm leading-tight">${esc(m.n.split(' — ')[0])}</span><span class="block text-[11px] text-secondary leading-tight">${esc((m.n.split(' — ')[1] || ''))}</span></button>`).join('')}</div>`)}
+        ${panel('2. Warna', `<div class="space-y-3"><label class="block"><span class="label">Mode warna</span><select class="input mt-1" data-f="warna">${['Warna Berry', 'Merah Stroberi', 'Warna model'].map(x => `<option ${st.warna === x ? 'selected' : ''}>${x}</option>`).join('')}</select><span class="block font-mono text-[10px] text-secondary mt-0.5">Warna Berry = hijau tua utama · Merah Stroberi = merah utama · Warna model = warna asli model</span></label><div class="grid grid-cols-3 gap-2">${[['warnaUtama', 'Utama'], ['warnaKedua', 'Kedua'], ['warnaLatar', 'Latar']].map(w => `<label class="block"><span class="label">${w[1]}</span><input type="color" class="input mt-1 h-11 p-1" data-f="${w[0]}" value="${esc(st[w[0]])}"></label>`).join('')}</div></div>`)}
+        ${panel('3. Teks', `<div class="space-y-3">${fld('slogan', 'Slogan kecil (di atas judul)')}${fld('judul', 'Judul besar')}${fld('tagline', 'Kalimat pembuka', 'area')}${fld('tentang', 'Tentang aplikasi', 'area')}</div>`)}
+        ${panel('4. Gambar Slide & Video', `<p class="text-body-sm text-secondary mb-2">Gambar berganti otomatis di bagian atas dan tampil di galeri. JPG/PNG/WEBP, otomatis diperkecil, maks 12 gambar.</p><div id="le-gambar" class="grid grid-cols-3 gap-2"></div><label class="tombol mt-2 cursor-pointer w-full">${ik('add_photo_alternate')}Unggah gambar<input type="file" accept="image/jpeg,image/png,image/webp" multiple class="sr-only" id="le-unggah"></label><p class="font-mono text-[11px] text-secondary mt-1" id="le-status"></p><div class="mt-3">${fld('video', 'Video (opsional)', 'url', 'https://www.youtube.com/watch?v=… atau tautan .mp4', 'Diputar otomatis tanpa suara & berulang (aturan peramban).')}</div>`)}
+        ${panel('5. Kontak (diisi pemilik — kosongkan bila tidak ingin ditampilkan)', `<div class="space-y-3">${fld('telepon', 'Telepon / WA', '', '[isi nomor]')}${fld('email', 'Email', '', '[isi email]')}${fld('jam', 'Jam layanan', '', 'mis. Senin–Sabtu 07.00–16.00')}${fld('alamat', 'Alamat', 'area', '[isi alamat]')}${fld('kontak', 'Keterangan kontak lain', 'area')}</div>`)}
+        <div class="sticky bottom-16 lg:bottom-0 z-10 bg-surface border border-strong p-3 flex flex-wrap gap-2 justify-end"><button class="tombol" id="le-reset">${ik('restart_alt')}Kembalikan bawaan</button><a class="tombol" href="index.html" target="_blank" rel="noopener">${ik('open_in_new')}Lihat situs</a><button class="tombol tombol-utama" id="le-simpan">${ik('save')}Simpan Landing</button></div>
+      </div>
+      <section class="kartu xl:sticky xl:top-16 min-w-0"><div class="flex items-center justify-between gap-2 px-3 py-2 border-b border-hairline"><h2 class="label">Pratinjau langsung</h2><div class="flex border border-subtle" role="group" aria-label="Lebar pratinjau">${[['desktop', 'desktop_windows', 'Desktop'], ['hp', 'smartphone', 'HP']].map(x => `<button type="button" class="px-3 h-9 font-mono text-mono-badge flex items-center gap-1 ${x[0] === lebar ? 'bg-primary text-on-primary' : 'text-secondary'}" data-lebar="${x[0]}">${ik(x[1], 'text-[16px]')}${x[2]}</button>`).join('')}</div></div><div class="bg-surface-low p-2 overflow-hidden" id="le-bingkai" style="height:72vh"><iframe id="le-pv" title="Pratinjau landing page" src="index.html?pratinjau=1&v=${v}" class="bg-white border border-hairline block mx-auto" style="transform-origin:0 0"></iframe></div></section>
+    </div>`;
+    const pv = $('#le-pv', isi), bingkai = $('#le-bingkai', isi);
+    const kirim = () => { try { pv.contentWindow.postMessage({ awbLanding: JSON.parse(JSON.stringify(st)) }, location.origin); } catch (e) { } };
+    const ukur = () => { const W = lebar === 'hp' ? 390 : 1280, H = bingkai.clientHeight - 16, avail = bingkai.clientWidth - 16, sk = Math.min(1, avail / W); pv.style.width = W + 'px'; pv.style.height = (H / sk) + 'px'; pv.style.transform = 'scale(' + sk + ')'; pv.style.marginLeft = Math.max(0, (avail - W * sk) / 2) + 'px'; };
+    let tPv; const segarkan = () => { clearTimeout(tPv); tPv = setTimeout(kirim, 250); };
+    const onPesan = (e) => { if (e.origin === location.origin && e.data && e.data.awbPratinjauSiap) kirim(); };
+    addEventListener('message', onPesan); pv.addEventListener('load', () => { ukur(); kirim(); });
+    const ro = new ResizeObserver(ukur); ro.observe(bingkai);
+    const gambarHtml = () => { $('#le-gambar', isi).innerHTML = st.gambar.length ? st.gambar.map((g, i) => `<figure class="relative border border-hairline bg-surface-low aspect-[4/3] overflow-hidden"><img src="${esc(g.url)}" alt="Gambar slide ${i + 1}" class="w-full h-full object-cover" loading="lazy"><figcaption class="absolute inset-x-0 bottom-0 flex justify-between bg-black/60 text-white"><button type="button" class="w-9 h-9 flex items-center justify-center" data-geser="${i}" data-arah="-1" aria-label="Geser ke kiri" ${i ? '' : 'disabled'}>${ik('chevron_left')}</button><button type="button" class="w-9 h-9 flex items-center justify-center" data-hapus-g="${i}" aria-label="Hapus gambar">${ik('delete')}</button><button type="button" class="w-9 h-9 flex items-center justify-center" data-geser="${i}" data-arah="1" aria-label="Geser ke kanan" ${i < st.gambar.length - 1 ? '' : 'disabled'}>${ik('chevron_right')}</button></figcaption></figure>`).join('') : `<p class="col-span-3 text-body-sm text-secondary border border-dashed border-subtle p-3 text-center">Belum ada gambar — model memakai gradasi warna sebagai pengganti.</p>`; };
+    gambarHtml();
+    isi.addEventListener('input', e => { const f = e.target.dataset.f; if (!f) return; st[f] = e.target.value; segarkan(); });
+    isi.addEventListener('change', e => { const f = e.target.dataset.f; if (f) { st[f] = e.target.value; segarkan(); } });
+    isi.addEventListener('click', async e => {
+      const m = e.target.closest('[data-model]'); if (m) { st.model = m.dataset.model; $$('[data-model]', isi).forEach(b => { const ak = b === m; b.classList.toggle('border-primary', ak); b.classList.toggle('border-2', ak); b.classList.toggle('bg-surface-low', ak); b.classList.toggle('border-hairline', !ak); b.setAttribute('aria-pressed', ak); }); kirim(); return; }
+      const l = e.target.closest('[data-lebar]'); if (l) { lebar = l.dataset.lebar; $$('[data-lebar]', isi).forEach(b => { const ak = b === l; b.classList.toggle('bg-primary', ak); b.classList.toggle('text-on-primary', ak); b.classList.toggle('text-secondary', !ak); }); ukur(); return; }
+      const g = e.target.closest('[data-geser]'); if (g) { const i = +g.dataset.geser, j = i + (+g.dataset.arah); [st.gambar[i], st.gambar[j]] = [st.gambar[j], st.gambar[i]]; gambarHtml(); segarkan(); return; }
+      const h = e.target.closest('[data-hapus-g]'); if (h) { const i = +h.dataset.hapusG, item = st.gambar[i]; if (!(await konfirmasi('Hapus gambar ini?', 'Gambar dihapus dari landing. Berkasnya dipindahkan ke Sampah Drive setelah Anda menyimpan.', { label: 'Hapus', bahaya: true }))) return; st.gambar.splice(i, 1); (st._hapus = st._hapus || []).push(item.id); gambarHtml(); segarkan(); return; }
+    });
+    $('#le-unggah', isi).onchange = async (e) => {
+      const files = Array.from(e.target.files || []); e.target.value = ''; const status = $('#le-status', isi);
+      for (const [n, f] of files.entries()) {
+        if (st.gambar.length >= 12) { toast('Maksimal 12 gambar.', 'warn'); break; }
+        status.textContent = 'Mengunggah ' + (n + 1) + ' dari ' + files.length + '…';
+        try { const k = await UI.kompres(f); const x = await API.api('landing.unggah', k); if (!x.success) throw new Error(x.message); st.gambar.push({ id: x.data.id, url: x.data.url }); if (!x.data.publik) toast(x.message, 'warn'); gambarHtml(); segarkan(); }
+        catch (er) { toast(f.name + ': ' + er.message, 'crit'); }
+      }
+      status.textContent = files.length ? 'Selesai. Klik "Simpan Landing" agar tampil di situs.' : '';
+    };
+    $('#le-reset', isi).onclick = async () => { if (!(await konfirmasi('Kembalikan teks & warna bawaan?', 'Model, warna, dan teks kembali ke bawaan. Gambar dan kontak tidak diubah. Belum tersimpan sampai Anda klik Simpan.', { label: 'Kembalikan' }))) return; ['model', 'warna', 'warnaUtama', 'warnaKedua', 'warnaLatar', 'judul', 'slogan', 'tagline', 'tentang'].forEach(k => st[k] = AWBLanding.BAWAAN[k]); editorUlang(); };
+    const editorUlang = () => { $$('[data-f]', isi).forEach(el => { el.value = st[el.dataset.f]; }); $$('[data-model]', isi).forEach(b => { const ak = b.dataset.model === st.model; b.classList.toggle('border-primary', ak); b.classList.toggle('border-2', ak); b.classList.toggle('bg-surface-low', ak); b.classList.toggle('border-hairline', !ak); }); kirim(); };
+    $('#le-simpan', isi).onclick = async () => {
+      if (st.video && !/^https:\/\//i.test(st.video)) return toast('Tautan video harus diawali https://', 'warn');
+      ['warnaUtama', 'warnaKedua', 'warnaLatar'].forEach(k => { if (!/^#[0-9a-fA-F]{6}$/.test(st[k])) st[k] = AWBLanding.BAWAAN[k]; });
+      const ubah = Object.keys(PETA_LANDING).filter(k => String(st[k] || '') !== String(awal[k] || '')).map(k => ({ Kunci: PETA_LANDING[k], Nilai: st[k] || '', Divisi: 'LANDING', Label: k, Tipe: 'text' }));
+      const idBaru = st.gambar.map(g => g.id).join(','), idLama = awal.gambar.map(g => g.id).join(',');
+      if (idBaru !== idLama) ubah.push({ Kunci: 'LANDING_GAMBAR', Nilai: idBaru, Divisi: 'LANDING', Label: 'Gambar slide', Tipe: 'text' });
+      if (!ubah.length && !(st._hapus || []).length) return toast('Tidak ada perubahan.', 'info');
+      const b = $('#le-simpan', isi); b.disabled = true;
+      try {
+        if (ubah.length) { const x = await API.api('pengaturan.simpan', { ubah }); if (!x.success) throw new Error(x.message); }
+        for (const id of (st._hapus || [])) await API.api('landing.hapusMedia', { id });
+        st._hapus = []; Object.assign(awal, JSON.parse(JSON.stringify(st))); toast('Landing page tersimpan — sudah tampil di situs.');
+      } catch (er) { toast(er.message, 'crit'); }
+      b.disabled = false;
+    };
+    // bersihkan pendengar global saat halaman berganti
+    const lepas = () => { removeEventListener('message', onPesan); ro.disconnect(); removeEventListener('hashchange', lepas); };
+    addEventListener('hashchange', lepas);
   }
 
   window.Halaman = { halMasuk, halBeranda, halDashboard, halDivisi, halInputCepat, halIsu, halGagasan, halNotif, halLaporan, halEkspor, halAudit, halPengaturan, pilihFormulir };
